@@ -37,7 +37,7 @@ always@(posedge CLK or posedge RST) begin
 					'd0: begin
 						if(INP_VALID == 'd3) begin
 							RES <= OPA + OPB;
-							COUT <= RES[width] ? 1:0;
+							COUT  <= (({1'b0, OPA} + {1'b0, OPB}) >> width) & 1'b1;
 							OFLOW <= 'b0;
 						end
 						else begin
@@ -69,7 +69,7 @@ always@(posedge CLK or posedge RST) begin
 					'd2: begin
 						if(INP_VALID == 'd3) begin
 							RES <= OPA + OPB + CIN;
-							COUT <= RES[width] ? 1:0;
+							COUT  <= (({1'b0, OPA} + {1'b0, OPB}) >> width) & 1'b1;
 						end
 						else begin
 							 RES <= 'bz;
@@ -192,6 +192,8 @@ always@(posedge CLK or posedge RST) begin
 							if(cnt == 'b0) begin
 								opa <= OPA;
 								opb <= OPB;
+								cnt <= cnt+1;
+								RES <= 'b0;
 							end
 							else if(cnt < 2) begin 	
 								RES <= 'b0;
@@ -219,6 +221,8 @@ always@(posedge CLK or posedge RST) begin
 							if(cnt == 'b0) begin
 								opa <= OPA;
 								opb <= OPB;
+								cnt <= cnt + 1;
+								RES <= 'b0;
 							end
 							else if(cnt < 2) begin 	
 								cnt <= cnt + 1;
