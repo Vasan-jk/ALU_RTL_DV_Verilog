@@ -20,9 +20,6 @@ reg [width-1:0] opa,opb;
 assign IA = $signed(OPA);
 assign IB = $signed(OPB);
 
-wire [width-1:0] sum_re = IA + IB;
-wire [width-1:0] sub_re = IA - IB;
-
 always@(posedge CLK or posedge RST) begin
 	if(RST)begin
 		RES <= 'bz;
@@ -44,13 +41,7 @@ always@(posedge CLK or posedge RST) begin
 							OFLOW <= 'b0;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end			
 					end	
 					'd1: begin
@@ -60,13 +51,7 @@ always@(posedge CLK or posedge RST) begin
 							COUT <= 'b0;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd2: begin
@@ -75,28 +60,16 @@ always@(posedge CLK or posedge RST) begin
 							COUT  <= (({1'b0, OPA} + {1'b0, OPB}) >> width) & 1'b1;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd3: begin
 						if(INP_VALID == 'd3) begin
 							RES <= OPA - OPB - CIN;
-							OFLOW <= (OPA < OPB) ? 1:0;
+							OFLOW <= (OPA <= OPB) ? 1:0;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd4: begin
@@ -104,13 +77,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= OPA + 1;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd5: begin
@@ -118,13 +85,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= OPA - 1;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd6: begin
@@ -132,13 +93,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= OPB + 1;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd7: begin
@@ -146,13 +101,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= OPB - 1;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd8: begin
@@ -181,78 +130,60 @@ always@(posedge CLK or posedge RST) begin
 	
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd9: begin
 						if(INP_VALID == 'd3) begin
 							if(cnt == 'b0) begin
-								opa <= OPA;
-								opb <= OPB;
+								opa = OPA + 1;
+								opb = OPB + 1;
 								cnt <= cnt+1;
-								RES <= 'b0;
+								TMP_OP <= opa * opb;
 							end
 							else if(cnt < 2) begin 	
 								RES <= 'b0;
 								cnt <= cnt + 1;
 							end
 							else if(cnt >= 2) begin
-								RES <= ((opa+1) * (opb+1));
 								cnt <= 0;
+								RES <= TMP_OP;
 							end
 							else
 								cnt <= 0;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd10: begin
 						if(INP_VALID == 'd3) begin
 							if(cnt == 'b0) begin
-								opa <= OPA;
-								opb <= OPB;
+								opa = OPA<<1;
+								opb = OPB;
 								cnt <= cnt + 1;
-								RES <= 'b0;
+								TMP_OP <= opa*opb;
 							end
 							else if(cnt < 2) begin 	
 								cnt <= cnt + 1;
 								RES <= 'b0;
 							end
 							else if(cnt >= 2) begin
-								RES <= (opa<<1) * (opb);
 								cnt <= 0;
+								RES <= TMP_OP;
 							end 
 							else
 								cnt <= 0;
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd11: begin
 						if(INP_VALID == 'd3) begin
-						TMP_OP <= IA + IB;
 						COUT <= 'b0;
-						OFLOW <= (IA[width-1] ^ IB[width-1]) & (sum_re[width-1] ^ IA[width-1]);
+						TMP_OP = IA + IB;
+						OFLOW <= (~(IA[width-1] ^ IB[width-1])) & (TMP_OP[width-1] ^ IA[width-1]);
 						RES <= TMP_OP;
 						
 							if(IA==IB) begin
@@ -277,20 +208,14 @@ always@(posedge CLK or posedge RST) begin
 							end	
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					'd12: begin
 						if(INP_VALID == 'd3) begin
-						TMP_OP <= IA - IB;
 						COUT <= 'b0;
-						OFLOW <= (IA[width-1]^IB[width-1]) & (sub_re[width-1]^IA[width-1]);
+						TMP_OP = IA - IB;
+						OFLOW <= (IA[width-1]^IB[width-1]) & (TMP_OP[width-1]^IA[width-1]);
 						RES <= TMP_OP;
 						
 							if(IA==IB) begin
@@ -315,13 +240,7 @@ always@(posedge CLK or posedge RST) begin
 							end	
 						end
 						else begin
-							 RES <= 'bz;
-                					 COUT <= 1'bz;
-                					 OFLOW <= 1'bz;
-                					 G <= 1'bz;
-                					 E <= 1'bz;
-                					 L <= 1'bz;
-                					 ERR <= 1'bz;
+                					 ERR <= 1'b1;
 						end				
 					end
 					default: begin
@@ -343,13 +262,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPA & OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd1: begin
@@ -357,13 +270,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},~(OPA & OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd2: begin
@@ -371,13 +278,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPA | OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd3: begin
@@ -385,13 +286,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},~(OPA | OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd4: begin
@@ -399,13 +294,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPA ^ OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd5: begin
@@ -413,13 +302,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},~(OPA ^ OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd6: begin
@@ -427,13 +310,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},~(OPA)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd7: begin
@@ -441,13 +318,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},~(OPB)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd8: begin
@@ -455,13 +326,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPA<<1)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd9: begin
@@ -469,13 +334,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPA>>1)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd10: begin
@@ -483,13 +342,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPB<<1)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd11: begin
@@ -497,13 +350,7 @@ always@(posedge CLK or posedge RST) begin
 							RES <= {{width{1'b0}},(OPB>>1)};
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd12: begin
@@ -524,13 +371,7 @@ always@(posedge CLK or posedge RST) begin
 								ERR <= 'b0;
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					'd13: begin
@@ -551,13 +392,7 @@ always@(posedge CLK or posedge RST) begin
 								ERR <= 'b0;
 						end
 						else begin
-							 RES <= 'bz;
-                                                         COUT <= 1'bz;
-                                                         OFLOW <= 1'bz;
-                                                         G <= 1'bz;
-                                                         E <= 1'bz;
-                                                         L <= 1'bz;
-                                                         ERR <= 1'bz;
+                                                         ERR <= 1'b1;
 						end
 					end
 					default: begin
