@@ -20,6 +20,9 @@ reg [width-1:0] opa,opb;
 assign IA = $signed(OPA);
 assign IB = $signed(OPB);
 
+wire [width-1:0] sum_re = IA + IB;
+wire [width-1:0] sub_re = IA - IB;
+
 always@(posedge CLK or posedge RST) begin
 	if(RST)begin
 		RES <= 'bz;
@@ -249,7 +252,7 @@ always@(posedge CLK or posedge RST) begin
 						if(INP_VALID == 'd3) begin
 						TMP_OP <= IA + IB;
 						COUT <= 'b0;
-						OFLOW <= (~(IA[width-1]^IB[width-1])) & (TMP_OP[width-1]^IA[width-1]);
+						OFLOW <= (IA[width-1] ^ IB[width-1]) & (sum_re[width-1] ^ IA[width-1]);
 						RES <= TMP_OP;
 						
 							if(IA==IB) begin
@@ -287,7 +290,7 @@ always@(posedge CLK or posedge RST) begin
 						if(INP_VALID == 'd3) begin
 						TMP_OP <= IA - IB;
 						COUT <= 'b0;
-						OFLOW <= (~(IA[width-1]^IB[width-1])) & (TMP_OP[width-1]^IA[width-1]);
+						OFLOW <= (IA[width-1]^IB[width-1]) & (sub_re[width-1]^IA[width-1]);
 						RES <= TMP_OP;
 						
 							if(IA==IB) begin
