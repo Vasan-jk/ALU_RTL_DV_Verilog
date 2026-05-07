@@ -472,7 +472,7 @@ always@(posedge CLK or posedge RST) begin
 						end
 					end
 					default: begin
-                                                         ers <= 'bz;
+                                                         err <= 'bz;
                                                          cout <= 1'bz;
                                                          oflow <= 1'bz;
                                                          g <= 1'bz;
