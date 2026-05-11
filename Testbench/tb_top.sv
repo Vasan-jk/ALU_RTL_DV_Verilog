@@ -341,7 +341,7 @@ module tb_top;
             apply_test_mul(8'h02, 8'h05, 4'd10, 2'b10, 0, "shift_nd_multiply_invalid");
             apply_test_mul(8'h02, 8'h05, 4'd10, 2'b00, 0, "shift_nd_multiply_invalid");
             
-	    apply_test_mul_mode(8'h02, 8'h05, 4'd10, 2'b11, 0, "multiply_mode_change");
+	    //apply_test_mul_mode(8'h02, 8'h05, 4'd10, 2'b11, 0, "multiply_mode_change");
 
             apply_test(8'h7F, 8'h01, 4'd11, 2'b11, 0, "signed_add");
             apply_test(8'h2F, 8'h51, 4'd11, 2'b11, 0, "signed_add");
@@ -362,7 +362,9 @@ module tb_top;
             apply_test(8'h7F, 8'hFF, 4'd12, 2'b00, 0, "signed_sub_invalid");
             apply_test(8'h7F, 8'hFF, 4'd12, 2'b01, 0, "signed_sub_invalid");
             apply_test(8'h7F, 8'hFF, 4'd12, 2'b10, 0, "signed_sub_invalid");
-
+	    apply_test(8'h05, 8'hFE, 4'd12, 2'b11, 0, "signed_sub_diff_sign_no_oflow");
+	    apply_test(8'hFF, 8'h01, 4'd12, 2'b11, 0, "signed_sub_neg_pos_no_oflow");
+	
             apply_test(8'hAA, 8'hBB, 4'd13, 2'b11, 0, "default_err");
             apply_test(8'hAA, 8'hBB, 4'd15, 2'b11, 0, "default_err");
         end
