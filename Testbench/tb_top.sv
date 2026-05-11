@@ -160,6 +160,52 @@ module tb_top;
         end
     endtask
 
+
+    task apply_test_mul_mode (
+        input [WIDTH-1:0] a,
+        input [WIDTH-1:0] b,
+        input [3:0]       cmd_in,
+        input [1:0]       iv,
+        input             cin_in,
+        input [80*8:1]    tname
+    );
+        reg [2*WIDTH-1:0] ref_res_captured;
+        reg               ref_err_captured;
+        begin
+            @(posedge CLK);
+            OPA       = a;
+            OPB       = b;
+            CMD       = cmd_in;
+            INP_VALID = iv;
+            CIN       = cin_in;
+	
+            #1;
+            ref_res_captured = RES_ref;
+            ref_err_captured = ERR_ref;
+
+            repeat(2) @(posedge CLK); #2;
+		MODE = 'd0;
+            repeat(2) @(posedge CLK); #2;
+	 
+            test_count = test_count + 1;
+
+            if (RES_dut === ref_res_captured && ERR_dut === ref_err_captured) begin
+                $display("[PASS] %-32s OPA=%02h OPB=%02h CMD=%04b IV=%02b",
+                         tname, a, b, cmd_in, iv);
+                pass_count = pass_count + 1;
+            end else begin
+                $display("[FAIL] %-32s OPA=%02h OPB=%02h CMD=%04b IV=%02b",
+                         tname, a, b, cmd_in, iv);
+                $display("  DUT: RES=%0h ERR=%b", RES_dut, ERR_dut);
+                $display("  REF: RES=%0h ERR=%b", ref_res_captured, ref_err_captured);
+                fail_count = fail_count + 1;
+            end
+        end
+     endtask
+
+
+
+
     task check_and_report (
         input [80*8:1]    tname,
         input [WIDTH-1:0] a,
@@ -294,9 +340,13 @@ module tb_top;
             apply_test_mul(8'h02, 8'h05, 4'd10, 2'b01, 0, "shift_nd_multiply_invalid");
             apply_test_mul(8'h02, 8'h05, 4'd10, 2'b10, 0, "shift_nd_multiply_invalid");
             apply_test_mul(8'h02, 8'h05, 4'd10, 2'b00, 0, "shift_nd_multiply_invalid");
+            
+	    apply_test_mul_mode(8'h02, 8'h05, 4'd10, 2'b11, 0, "multiply_mode_change");
 
             apply_test(8'h7F, 8'h01, 4'd11, 2'b11, 0, "signed_add");
             apply_test(8'h2F, 8'h51, 4'd11, 2'b11, 0, "signed_add");
+            apply_test(8'h05, 8'h01, 4'd11, 2'b11, 0, "signed_add");
+            apply_test(8'hFF, 8'hFF, 4'd11, 2'b11, 0, "signed_add");
             apply_test(8'h7F, 8'h7F, 4'd11, 2'b11, 0, "signed_add_pos_oflow");
             apply_test(8'h80, 8'h80, 4'd11, 2'b11, 0, "signed_add_neg_oflow");
             apply_test(8'h10, 8'hF0, 4'd11, 2'b11, 0, "signed_add_pos_neg");
