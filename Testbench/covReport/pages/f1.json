@@ -1,0 +1,34 @@
+var g_data = {
+f3:{
+scopes:[{link:'z.htm?f=0&s=3',val:'work.Eight_bit_ALU_rtl_design'}]
+,FSMs:[{dummy:0}
+,{anchor:'cvg266',items:[{c:'G',p:'100.00',z:'count'}
+,{cr:'c',s:'1',z:'st0',h:'37',c:'g'}
+,{cr:'c',z:'st0 -> st1',h:'14',c:'g'}
+,{cr:'c',s:'1',z:'st1',h:'14',c:'g'}
+,{cr:'c',z:'st1 -> st2',h:'13',c:'g'}
+,{cr:'c',z:'st1 -> st0',h:'1',c:'g'}
+,{cr:'c',s:'1',z:'st2',h:'13',c:'g'}
+,{cr:'c',z:'st2 -> st0',h:'13',c:'g'}
+]}
+
+],
+},
+f201:{
+scopes:[{s:'5',b:'1',val:'tb_top'},{link:'z.htm?f=0&s=201',val:'dut'}]
+,FSMs:[{dummy:0}
+,{anchor:'cvg266',items:[{c:'G',p:'100.00',z:'count'}
+,{cr:'c',s:'1',z:'st0',h:'37',c:'g'}
+,{cr:'c',z:'st0 -> st1',h:'14',c:'g'}
+,{cr:'c',s:'1',z:'st1',h:'14',c:'g'}
+,{cr:'c',z:'st1 -> st2',h:'13',c:'g'}
+,{cr:'c',z:'st1 -> st0',h:'1',c:'g'}
+,{cr:'c',s:'1',z:'st2',h:'13',c:'g'}
+,{cr:'c',z:'st2 -> st0',h:'13',c:'g'}
+]}
+
+],
+},
+dummyEnd:0
+};
+processFsmData(g_data);
