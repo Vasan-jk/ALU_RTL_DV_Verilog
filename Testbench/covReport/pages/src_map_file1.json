@@ -1,4 +1,0 @@
-var g_data = {'dummy':null,
-'2':'alu_rtl.sv',
-'3':'reference_mod.sv',
-'1':'tb_top.sv'};
